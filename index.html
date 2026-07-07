@@ -43,8 +43,8 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
   <div style="position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:60;flex-direction:column;gap:2px;padding:16px 0;display:none" data-spine>
     <sc-for list="{{ errors }}" as="err" hint-placeholder-count="8">
       <a href="{{ err.anchor }}" data-spy-dot="{{ err.id }}" style="display:flex;align-items:center;gap:11px;padding:8px 0;text-decoration:none">
-        <span data-tile style="width:13px;height:13px;border:1.5px solid var(--line-2);background:var(--canvas);border-radius:3px;transition:all .35s var(--ease);flex:none"></span>
-        <span data-lab style="font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);white-space:nowrap;transition:color .25s var(--ease),font-weight .25s var(--ease)"><b style="color:var(--coral-deep);margin-right:7px">{{ err.n }}</b>{{ err.short }}</span>
+        <span data-tile style="width:15px;height:15px;border:1.5px solid var(--line-2);background:var(--canvas);border-radius:3px;transition:all .35s var(--ease);flex:none"></span>
+        <span data-lab style="font-family:var(--mono);font-size:11.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);white-space:nowrap;transition:color .25s var(--ease),font-weight .25s var(--ease)"><b style="color:var(--coral-deep);margin-right:8px">{{ err.n }}</b>{{ err.short }}</span>
       </a>
     </sc-for>
   </div>
