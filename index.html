@@ -22,41 +22,25 @@ html{scroll-behavior:smooth}
 a{color:var(--coral-deep)}
 a:hover{color:var(--coral)}
 button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--coral);outline-offset:2px;border-radius:5px}
-.print-only{display:none}
-@media print{
-  html{scroll-behavior:auto}
-  [data-spy]{scroll-margin-top:0}
-  .no-print{display:none!important}
-  .print-only{display:block!important}
-  .diag-controls{display:none!important}
-  body{background:#fff}
-  section,header,footer,[data-plan-row],[data-diag-row]{break-inside:avoid}
-  [data-more-panel]{display:block!important}
-}
 </style>
 </helmet>
 
 <div style="background:var(--canvas);color:var(--ink);font-family:var(--font);min-height:100vh;overflow-x:hidden">
 
   <!-- reading progress (Mejora 5) -->
-  <div class="no-print" data-progress style="position:fixed;top:0;left:0;height:3px;width:0;background:var(--coral);z-index:90;transition:width .08s linear"></div>
+  <div data-progress style="position:fixed;top:0;left:0;height:3px;width:0;background:var(--coral);z-index:90;transition:width .08s linear"></div>
 
   <!-- top bar -->
-  <div class="no-print" style="position:fixed;top:0;left:0;right:0;z-index:75;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);background:rgba(250,248,243,0.85);backdrop-filter:blur(12px) saturate(118%);-webkit-backdrop-filter:blur(12px) saturate(118%);border-bottom:1px solid var(--line)">
+  <div style="position:fixed;top:0;left:0;right:0;z-index:75;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);background:rgba(250,248,243,0.85);backdrop-filter:blur(12px) saturate(118%);-webkit-backdrop-filter:blur(12px) saturate(118%);border-bottom:1px solid var(--line)">
     <div style="display:flex;align-items:center;gap:16px">
       <img src="assets/arkode-complete.png" alt="Arkode" style="height:15px">
       <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--coral-deep);border:1px solid rgba(232,80,63,0.32);padding:5px 9px;border-radius:5px">Adopción del cambio</span>
     </div>
-    <div style="display:flex;align-items:center;gap:16px">
-      <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--faint)">Proyecto Odoo</span>
-      <button type="button" onClick="{{ doPrint }}" aria-label="Imprimir o guardar como PDF" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);background:var(--canvas);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:7px 11px;cursor:pointer;transition:all .18s var(--ease)" style-hover="border-color:var(--coral);color:var(--coral-deep)">
-        <span data-px="doc" data-unit="3" data-tint="#001C43"></span>Imprimir / PDF
-      </button>
-    </div>
+    <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--faint)">Proyecto Odoo</span>
   </div>
 
   <!-- mosaic spine (Mejora 5: visible en desktop) -->
-  <div class="no-print" style="position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:60;flex-direction:column;gap:2px;padding:16px 0;display:none" data-spine>
+  <div style="position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:60;flex-direction:column;gap:2px;padding:16px 0;display:none" data-spine>
     <sc-for list="{{ errors }}" as="err" hint-placeholder-count="8">
       <a href="{{ err.anchor }}" data-spy-dot="{{ err.id }}" style="position:relative;display:flex;align-items:center;padding:8px 0;width:16px;text-decoration:none">
         <span data-tile style="width:13px;height:13px;border:1.5px solid var(--line-2);background:var(--canvas);border-radius:3px;transition:all .35s var(--ease);flex:none"></span>
@@ -224,7 +208,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
         </div>
 
         <!-- profundidad progresiva (Mejora 1) -->
-        <button type="button" onClick="{{ err.toggle }}" aria-expanded="{{ err.expandedStr }}" class="no-print" style="margin-top:22px;display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);background:var(--canvas);border:1px solid var(--line-2);border-radius:var(--r-md);padding:11px 16px;cursor:pointer;transition:all .18s var(--ease)" style-hover="border-color:var(--coral);color:var(--coral-deep)">
+        <button type="button" onClick="{{ err.toggle }}" aria-expanded="{{ err.expandedStr }}" style="margin-top:22px;display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);background:var(--canvas);border:1px solid var(--line-2);border-radius:var(--r-md);padding:11px 16px;cursor:pointer;transition:all .18s var(--ease)" style-hover="border-color:var(--coral);color:var(--coral-deep)">
           <span data-px="{{ err.toggleIcon }}" data-unit="3" data-tint="#001C43"></span>
           {{ err.moreLabel }}
         </button>
@@ -276,12 +260,11 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
               <div style="font-size:15.5px;color:var(--canvas);line-height:1.45">{{ q.text }}</div>
             </div>
             <div>
-              <div class="diag-controls" role="radiogroup" aria-label="{{ q.aria }}" style="display:flex;gap:8px">
+              <div role="radiogroup" aria-label="{{ q.aria }}" style="display:flex;gap:8px">
                 <button type="button" role="radio" aria-checked="{{ q.si.pressed }}" aria-pressed="{{ q.si.pressed }}" onClick="{{ q.si.onClick }}" style="{{ q.si.style }}">Sí</button>
                 <button type="button" role="radio" aria-checked="{{ q.parcial.pressed }}" aria-pressed="{{ q.parcial.pressed }}" onClick="{{ q.parcial.onClick }}" style="{{ q.parcial.style }}">A medias</button>
                 <button type="button" role="radio" aria-checked="{{ q.no.pressed }}" aria-pressed="{{ q.no.pressed }}" onClick="{{ q.no.onClick }}" style="{{ q.no.style }}">No</button>
               </div>
-              <span class="print-only" style="font-family:var(--mono);font-size:11px;letter-spacing:0.06em;color:var(--ink)">Respuesta: {{ q.answerLabel }}</span>
             </div>
           </div>
         </sc-for>
@@ -319,7 +302,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
                   <div style="font-size:14.5px;font-weight:600;color:var(--canvas);line-height:1.3"><span style="color:var(--coral);font-family:var(--mono);font-size:12px;margin-right:8px">{{ p.n }}</span>{{ p.short }} · <span style="color:rgba(250,248,243,0.7);font-weight:400">{{ p.moment }}</span></div>
                   <div style="font-size:13px;color:rgba(250,248,243,0.82);margin-top:6px;line-height:1.5">{{ p.arkode }}</div>
                 </div>
-                <a href="{{ p.anchor }}" class="no-print" style="font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--canvas);border:1px solid rgba(250,248,243,0.3);border-radius:var(--r-sm);padding:9px 13px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--coral);color:var(--coral)">Ir a la fase</a>
+                <a href="{{ p.anchor }}" style="font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--canvas);border:1px solid rgba(250,248,243,0.3);border-radius:var(--r-sm);padding:9px 13px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--coral);color:var(--coral)">Ir a la fase</a>
               </div>
             </sc-for>
           </div>
@@ -330,11 +313,8 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
         </div>
         </sc-if>
 
-        <div class="no-print" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
           <button type="button" onClick="{{ reset }}" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(250,248,243,0.82);background:transparent;border:1px solid rgba(250,248,243,0.28);border-radius:var(--r-md);padding:10px 15px;cursor:pointer;transition:all .18s var(--ease)" style-hover="border-color:rgba(250,248,243,0.7);color:#fff">Reiniciar diagnóstico</button>
-          <button type="button" onClick="{{ doPrint }}" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);background:var(--coral);border:1px solid var(--coral);border-radius:var(--r-md);padding:10px 15px;cursor:pointer;transition:all .18s var(--ease)" style-hover="background:var(--coral-deep);border-color:var(--coral-deep);color:#fff">
-            <span data-px="doc" data-unit="3" data-tint="#001C43"></span>Imprimir / guardar PDF
-          </button>
         </div>
       </div>
     </div>
@@ -360,7 +340,7 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
   </section>
 
   <!-- CTA / CIERRE -->
-  <section class="no-print" style="padding:clamp(64px,9vh,100px) var(--pad);border-bottom:1px solid var(--line)">
+  <section style="padding:clamp(64px,9vh,100px) var(--pad);border-bottom:1px solid var(--line)">
     <div style="max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap">
       <div style="max-width:44ch">
         <h2 style="font-size:clamp(24px,3vw,40px);letter-spacing:-0.04em;line-height:1.02;font-weight:600;text-wrap:balance">Menos errores es la diferencia entre el éxito y el fracaso.</h2>
@@ -582,11 +562,9 @@ class Component extends DCLogic {
         style: 'flex:1;padding:10px 6px;border-radius:8px;border:1px solid '+bd+';background:'+bg+';color:'+fg+';font-family:var(--font);font-size:12.5px;font-weight:500;cursor:pointer;transition:all .18s var(--ease);white-space:nowrap'
       };
     };
-    const labelMap = { si:'Sí', parcial:'A medias', no:'No' };
     const diag = qs.map((text, i) => ({
       n: String(i+1).padStart(2,'0'), text,
       aria: 'Pregunta ' + (i+1),
-      answerLabel: answers[i] !== undefined ? labelMap[answers[i]] : 'Sin responder',
       si: mk(i,'si'), parcial: mk(i,'parcial'), no: mk(i,'no'),
     }));
 
@@ -645,7 +623,6 @@ class Component extends DCLogic {
       answered, total, pct, pctW: pct+'%', band, bandDesc, bandColor,
       plan, planReady, hasRisks, noRisks,
       reset: () => this.setState({ answers: {} }),
-      doPrint: () => { try { window.print(); } catch(e){} },
     };
   }
 
