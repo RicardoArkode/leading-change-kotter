@@ -42,9 +42,9 @@ button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid 
   <!-- mosaic spine (Mejora 5: visible en desktop) -->
   <div style="position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:60;flex-direction:column;gap:2px;padding:16px 0;display:none" data-spine>
     <sc-for list="{{ errors }}" as="err" hint-placeholder-count="8">
-      <a href="{{ err.anchor }}" data-spy-dot="{{ err.id }}" style="position:relative;display:flex;align-items:center;padding:8px 0;width:16px;text-decoration:none">
+      <a href="{{ err.anchor }}" data-spy-dot="{{ err.id }}" style="display:flex;align-items:center;gap:11px;padding:8px 0;text-decoration:none">
         <span data-tile style="width:13px;height:13px;border:1.5px solid var(--line-2);background:var(--canvas);border-radius:3px;transition:all .35s var(--ease);flex:none"></span>
-        <span data-lab style="position:absolute;left:26px;top:50%;transform:translateY(-50%);background:rgba(250,248,243,0.97);border:1px solid var(--line);box-shadow:var(--e2);border-radius:7px;padding:5px 10px;font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .25s var(--ease)"><b style="color:var(--coral-deep);margin-right:7px">{{ err.n }}</b>{{ err.short }}</span>
+        <span data-lab style="font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--mute);white-space:nowrap;transition:color .25s var(--ease),font-weight .25s var(--ease)"><b style="color:var(--coral-deep);margin-right:7px">{{ err.n }}</b>{{ err.short }}</span>
       </a>
     </sc-for>
   </div>
@@ -657,7 +657,7 @@ class Component extends DCLogic {
   _layout(){
     const w = window.innerWidth;
     const spine = document.querySelector('[data-spine]');
-    if(spine) spine.style.display = w >= 1240 ? 'flex' : 'none';
+    if(spine) spine.style.display = w >= 1480 ? 'flex' : 'none';
     document.querySelectorAll('[data-two]').forEach(el => {
       if(el.dataset.orig === undefined){ el.dataset.orig = el.style.gridTemplateColumns || ''; }
       el.style.gridTemplateColumns = w < 860 ? '1fr' : el.dataset.orig;
@@ -704,7 +704,10 @@ class Component extends DCLogic {
           tile.style.transform = on ? 'rotate(45deg) scale(1.32)' : 'none';
           tile.style.boxShadow = on ? '0 0 0 5px rgba(255,108,93,0.15)' : 'none';
         }
-        if(lab) lab.style.opacity = on ? '1' : '0';
+        if(lab){
+          lab.style.color = on ? 'var(--ink)' : 'var(--mute)';
+          lab.style.fontWeight = on ? '600' : '400';
+        }
       });
     };
     this._io = new IntersectionObserver((entries) => {
