@@ -1,0 +1,741 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Adopción del Cambio en Odoo | Arkode</title>
+<meta name="description" content="Los 8 errores de Kotter aplicados a una implementación de Odoo, con diagnóstico interactivo de sostenibilidad del cambio. Por Arkode.">
+<link rel="icon" type="image/svg+xml" href="assets/arkode-icon.svg">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="icon" type="image/svg+xml" href="assets/arkode-icon.svg">
+<link rel="stylesheet" href="_ds/arkode-design-system-arkode-b9ccaa1b-56f0-4eb8-9beb-303f5ea22aaa/kit/mosaic.css">
+<link rel="stylesheet" href="_ds/arkode-design-system-arkode-b9ccaa1b-56f0-4eb8-9beb-303f5ea22aaa/styles.css">
+<script src="_ds/arkode-design-system-arkode-b9ccaa1b-56f0-4eb8-9beb-303f5ea22aaa/_ds_bundle.js"></script>
+<style>
+@keyframes pip{0%,100%{opacity:1}50%{opacity:.25}}
+html{scroll-behavior:smooth}
+[data-spy]{scroll-margin-top:80px}
+a{color:var(--coral-deep)}
+a:hover{color:var(--coral)}
+button:focus-visible,a:focus-visible,[tabindex]:focus-visible{outline:2px solid var(--coral);outline-offset:2px;border-radius:5px}
+.print-only{display:none}
+@media print{
+  html{scroll-behavior:auto}
+  [data-spy]{scroll-margin-top:0}
+  .no-print{display:none!important}
+  .print-only{display:block!important}
+  .diag-controls{display:none!important}
+  body{background:#fff}
+  section,header,footer,[data-plan-row],[data-diag-row]{break-inside:avoid}
+  [data-more-panel]{display:block!important}
+}
+</style>
+</helmet>
+
+<div style="background:var(--canvas);color:var(--ink);font-family:var(--font);min-height:100vh;overflow-x:hidden">
+
+  <!-- reading progress (Mejora 5) -->
+  <div class="no-print" data-progress style="position:fixed;top:0;left:0;height:3px;width:0;background:var(--coral);z-index:90;transition:width .08s linear"></div>
+
+  <!-- top bar -->
+  <div class="no-print" style="position:fixed;top:0;left:0;right:0;z-index:75;height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);background:rgba(250,248,243,0.85);backdrop-filter:blur(12px) saturate(118%);-webkit-backdrop-filter:blur(12px) saturate(118%);border-bottom:1px solid var(--line)">
+    <div style="display:flex;align-items:center;gap:16px">
+      <img src="assets/arkode-complete.png" alt="Arkode" style="height:15px">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--coral-deep);border:1px solid rgba(232,80,63,0.32);padding:5px 9px;border-radius:5px">Adopción del cambio</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:16px">
+      <span style="font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--faint)">Proyecto Odoo</span>
+      <button type="button" onClick="{{ doPrint }}" aria-label="Imprimir o guardar como PDF" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);background:var(--canvas);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:7px 11px;cursor:pointer;transition:all .18s var(--ease)" style-hover="border-color:var(--coral);color:var(--coral-deep)">
+        <span data-px="doc" data-unit="3" data-tint="#001C43"></span>Imprimir / PDF
+      </button>
+    </div>
+  </div>
+
+  <!-- mosaic spine (Mejora 5: visible en desktop) -->
+  <div class="no-print" style="position:fixed;left:24px;top:50%;transform:translateY(-50%);z-index:60;flex-direction:column;gap:2px;padding:16px 0;display:none" data-spine>
+    <sc-for list="{{ errors }}" as="err" hint-placeholder-count="8">
+      <a href="{{ err.anchor }}" data-spy-dot="{{ err.id }}" style="position:relative;display:flex;align-items:center;padding:8px 0;width:16px;text-decoration:none">
+        <span data-tile style="width:13px;height:13px;border:1.5px solid var(--line-2);background:var(--canvas);border-radius:3px;transition:all .35s var(--ease);flex:none"></span>
+        <span data-lab style="position:absolute;left:26px;top:50%;transform:translateY(-50%);background:rgba(250,248,243,0.97);border:1px solid var(--line);box-shadow:var(--e2);border-radius:7px;padding:5px 10px;font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .25s var(--ease)"><b style="color:var(--coral-deep);margin-right:7px">{{ err.n }}</b>{{ err.short }}</span>
+      </a>
+    </sc-for>
+  </div>
+
+  <!-- HERO -->
+  <header data-spy="intro" style="padding:118px var(--pad) 0;position:relative;overflow:hidden">
+    <div style="position:absolute;inset:0;opacity:.5;background-image:linear-gradient(var(--hair) 1px,transparent 1px),linear-gradient(90deg,var(--hair) 1px,transparent 1px);background-size:64px 64px;pointer-events:none;-webkit-mask-image:linear-gradient(180deg,#000,transparent 80%);mask-image:linear-gradient(180deg,#000,transparent 80%)"></div>
+    <div style="max-width:var(--maxw);margin:0 auto;position:relative;padding-bottom:52px;border-bottom:1px solid var(--line)">
+      <div style="display:flex;align-items:center;gap:12px;font-family:var(--mono);font-size:12px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute)">
+        <span style="width:8px;height:8px;background:var(--coral);border-radius:2px;animation:pip 2.4s var(--ease) infinite;flex:none"></span>
+        01 · Guía de adopción del cambio
+      </div>
+      <h1 style="font-size:clamp(38px,6.4vw,92px);letter-spacing:-0.055em;line-height:0.92;margin-top:24px;font-weight:600;max-width:16ch;text-wrap:balance">Por qué fracasan las transformaciones y cómo no repetirlo en tu <span style="color:var(--coral-deep)">Odoo</span>.</h1>
+      <p style="font-size:clamp(16px,1.8vw,22px);color:var(--ink-soft);margin-top:26px;max-width:56ch;line-height:1.42">Los 8 errores de Kotter, aterrizados a una implementación de Odoo. Qué evita que el cambio se sostenga, y qué hace Arkode en cada fase.</p>
+      <div style="display:flex;margin-top:44px;border-top:1px solid var(--line);border-left:1px solid var(--line);flex-wrap:wrap">
+        <div style="border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 22px 18px;flex:1;min-width:150px">
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint)">Marco</div>
+          <div style="font-size:21px;font-weight:600;letter-spacing:-0.02em;margin-top:8px">8 errores críticos</div>
+        </div>
+        <div style="border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 22px 18px;flex:1;min-width:150px">
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint)">Cada punto incluye</div>
+          <div style="font-size:21px;font-weight:600;letter-spacing:-0.02em;margin-top:8px">En tu proyecto Odoo</div>
+        </div>
+        <div style="border-right:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px 22px 18px;flex:1;min-width:150px">
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint)">Al final</div>
+          <div style="font-size:21px;font-weight:600;letter-spacing:-0.02em;margin-top:8px"><span style="color:var(--coral-deep)">Diagnóstico</span> accionable</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- CONTEXTO -->
+  <section style="padding:clamp(64px,9vh,104px) var(--pad);border-bottom:1px solid var(--line);background:var(--bone)">
+    <div style="max-width:var(--maxw);margin:0 auto">
+      <div style="display:grid;grid-template-columns:1.1fr 0.9fr;gap:56px;align-items:start" data-two>
+        <div>
+          <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute)">02 · El punto de partida</div>
+          <h2 style="font-size:clamp(26px,3.4vw,46px);letter-spacing:-0.045em;line-height:1;margin-top:14px;font-weight:600;max-width:18ch;text-wrap:balance">El software se instala en semanas. El cambio de hábitos, no.</h2>
+          <p style="font-size:16px;color:var(--ink-soft);margin-top:20px;max-width:56ch;line-height:1.55">Durante más de una década, John Kotter observó a decenas de empresas intentar reinventarse. La mayoría de los esfuerzos quedó cerca del fracaso. Su hallazgo: la transformación pasa por fases que toman tiempo, y saltarse pasos solo crea la ilusión de velocidad.</p>
+          <p style="font-size:16px;color:var(--ink-soft);margin-top:16px;max-width:56ch;line-height:1.55">Una implementación de Odoo es exactamente eso: un cambio en cómo trabaja la gente. Estos son los 8 errores que hacen que un ERP nuevo termine conviviendo con las mismas hojas de cálculo de siempre.</p>
+          <div style="display:flex;align-items:baseline;gap:16px;margin-top:32px;padding:22px 24px;background:var(--canvas);border:1px solid var(--line);border-radius:var(--r-lg)">
+            <div style="font-size:56px;font-weight:600;letter-spacing:-0.04em;line-height:1;color:var(--coral-deep)">+50%</div>
+            <div style="font-size:14.5px;color:var(--mute);line-height:1.45">de las empresas fracasan ya en la <b style="color:var(--ink)">primera fase</b>: nunca generan suficiente urgencia para que la gente coopere.</div>
+          </div>
+        </div>
+        <div style="border:1px solid var(--line);border-radius:var(--r-lg);background:var(--canvas);overflow:hidden">
+          <div style="padding:18px 22px;border-bottom:1px solid var(--line);font-family:var(--mono);font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--faint)">Cuatro verdades del cambio</div>
+          <sc-for list="{{ lessons }}" as="ls" hint-placeholder-count="4">
+            <div style="display:flex;gap:16px;padding:18px 22px;border-bottom:1px solid var(--line)">
+              <span style="font-family:var(--mono);font-size:12px;color:var(--coral-deep);font-weight:500;flex:none;width:20px">{{ ls.n }}</span>
+              <div>
+                <div style="font-size:15px;font-weight:600;letter-spacing:-0.01em">{{ ls.t }}</div>
+                <div style="font-size:13.5px;color:var(--mute);margin-top:5px;line-height:1.45">{{ ls.d }}</div>
+              </div>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MAPA DE FASES (Mejora 2) -->
+  <sc-if value="{{ showPhaseMap }}" hint-placeholder-val="{{ true }}">
+  <section id="mapa" style="padding:clamp(60px,8vh,96px) var(--pad);border-bottom:1px solid var(--line);background:var(--canvas)">
+    <div style="max-width:var(--maxw);margin:0 auto">
+      <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute)">03 · Mapa de fases</div>
+      <h2 style="font-size:clamp(26px,3.4vw,46px);letter-spacing:-0.045em;line-height:1;margin-top:14px;font-weight:600;max-width:20ch;text-wrap:balance">El orden importa. Saltarse un paso solo aparenta velocidad.</h2>
+      <p style="font-size:16px;color:var(--ink-soft);margin-top:18px;max-width:62ch;line-height:1.55">Los 8 pasos ocurren en momentos distintos de un proyecto Odoo típico. Da clic en cualquier fase para ir a su detalle.</p>
+
+      <div data-map style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:40px">
+        <sc-for list="{{ phases }}" as="ph" hint-placeholder-count="4">
+          <div style="display:flex;flex-direction:column;gap:12px">
+            <div style="border-top:2px solid var(--coral);padding-top:14px">
+              <div style="display:flex;align-items:center;gap:8px">
+                <span style="width:9px;height:9px;background:var(--coral);border-radius:2px;flex:none"></span>
+                <span style="font-family:var(--mono);font-size:11px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink);font-weight:500">{{ ph.label }}</span>
+              </div>
+              <div style="font-family:var(--mono);font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:var(--faint);margin-top:6px">{{ ph.note }}</div>
+            </div>
+            <sc-for list="{{ ph.items }}" as="err" hint-placeholder-count="2">
+              <a href="{{ err.anchor }}" style="display:flex;align-items:center;gap:12px;padding:14px 15px;border:1px solid var(--line);border-radius:var(--r-md);background:var(--canvas);text-decoration:none;color:var(--ink);transition:all .18s var(--ease)" style-hover="border-color:var(--coral);box-shadow:var(--e2);transform:translateY(-2px)">
+                <span style="font-family:var(--mono);font-size:13px;font-weight:500;color:var(--coral-deep);flex:none;width:20px">{{ err.n }}</span>
+                <span data-px="{{ err.icon }}" data-unit="3" data-tint="#001C43" style="flex:none"></span>
+                <span style="font-size:13.5px;font-weight:600;letter-spacing:-0.01em;line-height:1.2">{{ err.short }}</span>
+              </a>
+            </sc-for>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <!-- LOS 8 ERRORES -->
+  <sc-for list="{{ errors }}" as="err" hint-placeholder-count="8">
+    <!-- divisor de grupo de fase (Mejora 1: jerarquía) -->
+    <sc-if value="{{ err.groupStart }}" hint-placeholder-val="{{ false }}">
+      <div data-divider style="padding:clamp(38px,5vh,60px) var(--pad) 4px;background:var(--bone);border-bottom:1px solid var(--line)">
+        <div style="max-width:var(--maxw);margin:0 auto;display:flex;align-items:baseline;gap:18px;flex-wrap:wrap">
+          <div style="display:flex;align-items:center;gap:10px;font-family:var(--mono);font-size:12px;letter-spacing:0.14em;text-transform:uppercase;color:var(--coral-deep);font-weight:500;flex:none">
+            <span style="width:9px;height:9px;background:var(--coral);border-radius:2px"></span>
+            Momento · {{ err.moment }}
+          </div>
+          <div style="font-size:15px;color:var(--mute);line-height:1.45;max-width:60ch">{{ err.groupDesc }}</div>
+        </div>
+      </div>
+    </sc-if>
+
+    <section id="{{ err.id }}" data-spy="{{ err.id }}" data-err-idx="{{ err.idx }}" data-moment="{{ err.moment }}" style="padding:clamp(48px,7vh,84px) var(--pad);border-bottom:1px solid var(--line)">
+      <div style="max-width:var(--maxw);margin:0 auto">
+        <!-- header row -->
+        <div style="display:flex;align-items:flex-start;gap:24px;padding-bottom:8px">
+          <div style="font-family:var(--mono);font-size:clamp(40px,7vw,86px);font-weight:500;letter-spacing:-0.04em;line-height:0.8;color:var(--line-2);flex:none">{{ err.n }}</div>
+          <div style="flex:1">
+            <div style="display:flex;align-items:center;gap:11px;flex-wrap:wrap">
+              <span style="display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--coral-deep)">
+                <span data-px="{{ err.icon }}" data-unit="4" data-tint="#E8503F"></span>
+                Error {{ err.n }}
+              </span>
+              <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:0.1em;text-transform:uppercase;color:var(--faint);border:1px solid var(--line-2);border-radius:var(--r-sm);padding:3px 8px">{{ err.moment }}</span>
+            </div>
+            <h2 style="font-size:clamp(24px,3.2vw,42px);letter-spacing:-0.04em;line-height:1.02;margin-top:12px;font-weight:600;max-width:20ch;text-wrap:balance">{{ err.title }}</h2>
+          </div>
+        </div>
+
+        <!-- body (flex; alterna lado del dato por índice) -->
+        <div data-body data-alt="{{ err.altStr }}" style="display:flex;gap:40px;margin-top:28px;align-items:flex-start">
+          <div style="flex:1.35 1 0;min-width:0">
+            <p style="font-size:16.5px;color:var(--ink-soft);line-height:1.55;max-width:62ch">{{ err.error }}</p>
+            <div style="display:flex;gap:12px;margin-top:22px;padding:16px 20px;background:var(--bone);border-radius:var(--r-md);border:1px solid var(--line)">
+              <span data-px="arrowDownFull" data-unit="3" data-tint="#C5362A" style="margin-top:3px;flex:none"></span>
+              <div style="font-size:14.5px;color:var(--ink-soft);line-height:1.5"><b style="color:var(--crimson)">Por qué mata la transformación · </b>{{ err.why }}</div>
+            </div>
+          </div>
+          <!-- data badge -->
+          <div style="flex:0.65 1 0;min-width:0;border:1px solid var(--line-2);border-radius:var(--r-lg);padding:24px 24px 26px;background:var(--canvas)">
+            <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--faint)">{{ err.dataLabel }}</div>
+            <div style="font-size:clamp(30px,3.4vw,44px);font-weight:600;letter-spacing:-0.03em;line-height:1;margin-top:12px;color:var(--coral-deep)">{{ err.dataValue }}</div>
+            <div style="font-size:13px;color:var(--mute);margin-top:12px;line-height:1.5">{{ err.dataNote }}</div>
+          </div>
+        </div>
+
+        <!-- odoo lens + arkode -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:24px" data-two>
+          <sc-if value="{{ showOdooLens }}" hint-placeholder-val="{{ true }}">
+          <div style="border:1px solid var(--line);border-radius:var(--r-lg);padding:24px 26px;background:var(--bone-2)">
+            <div style="display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--ink-soft)">
+              <span data-px="database" data-unit="3" data-tint="#33405E"></span>
+              En tu proyecto Odoo
+            </div>
+            <p style="font-size:15px;color:var(--ink-soft);margin-top:14px;line-height:1.55">{{ err.odoo }}</p>
+          </div>
+          </sc-if>
+          <div class="grain" style="border-radius:var(--r-lg);padding:24px 26px;background:var(--ink);color:var(--canvas)">
+            <div style="display:flex;align-items:center;gap:9px;font-family:var(--mono);font-size:10.5px;letter-spacing:0.12em;text-transform:uppercase;color:var(--coral)">
+              <span data-px="check" data-unit="3" data-tint="#FF6C5D"></span>
+              Qué hace Arkode
+            </div>
+            <p style="font-size:15px;color:rgba(250,248,243,0.9);margin-top:14px;line-height:1.55">{{ err.arkode }}</p>
+          </div>
+        </div>
+
+        <!-- profundidad progresiva (Mejora 1) -->
+        <button type="button" onClick="{{ err.toggle }}" aria-expanded="{{ err.expandedStr }}" class="no-print" style="margin-top:22px;display:inline-flex;align-items:center;gap:9px;font-family:var(--mono);font-size:11px;letter-spacing:0.1em;text-transform:uppercase;color:var(--ink);background:var(--canvas);border:1px solid var(--line-2);border-radius:var(--r-md);padding:11px 16px;cursor:pointer;transition:all .18s var(--ease)" style-hover="border-color:var(--coral);color:var(--coral-deep)">
+          <span data-px="{{ err.toggleIcon }}" data-unit="3" data-tint="#001C43"></span>
+          {{ err.moreLabel }}
+        </button>
+
+        <sc-if value="{{ err.isOpen }}" hint-placeholder-val="{{ false }}">
+        <div data-more-panel style="margin-top:16px;border:1px solid var(--line);border-left:2px solid var(--coral);border-radius:var(--r-md);background:var(--bone);padding:26px 28px">
+          <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--coral-deep)">Qué hacen los casos exitosos</div>
+          <p style="font-size:15px;color:var(--ink-soft);margin-top:12px;line-height:1.6;max-width:70ch">{{ err.moreSuccess }}</p>
+
+          <sc-if value="{{ err.hasNuance }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:22px;padding-top:20px;border-top:1px solid var(--line)">
+            <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)">Matiz del artículo</div>
+            <p style="font-size:14.5px;color:var(--ink-soft);margin-top:10px;line-height:1.6;max-width:70ch">{{ err.moreNuance }}</p>
+          </div>
+          </sc-if>
+
+          <sc-if value="{{ err.hasExamples }}" hint-placeholder-val="{{ false }}">
+          <div style="margin-top:22px;padding-top:20px;border-top:1px solid var(--line)">
+            <div style="font-family:var(--mono);font-size:10px;letter-spacing:0.14em;text-transform:uppercase;color:var(--mute)">Ejemplos reales citados</div>
+            <div style="margin-top:14px;display:flex;flex-direction:column;gap:14px">
+              <sc-for list="{{ err.moreExamples }}" as="ex" hint-placeholder-count="2">
+                <div style="display:flex;gap:12px;align-items:flex-start">
+                  <span style="width:6px;height:6px;background:var(--coral);border-radius:2px;flex:none;margin-top:8px"></span>
+                  <div style="font-size:14.5px;color:var(--ink-soft);line-height:1.55;max-width:68ch">{{ ex }}</div>
+                </div>
+              </sc-for>
+            </div>
+          </div>
+          </sc-if>
+        </div>
+        </sc-if>
+      </div>
+    </section>
+  </sc-for>
+
+  <!-- DIAGNÓSTICO -->
+  <sc-if value="{{ showDiagnostic }}" hint-placeholder-val="{{ true }}">
+  <section id="diag" data-spy="diag" class="grain" style="padding:clamp(64px,9vh,108px) var(--pad);background:var(--ink);color:var(--canvas)">
+    <div style="max-width:960px;margin:0 auto">
+      <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--coral)">04 · Diagnóstico</div>
+      <h2 style="font-size:clamp(26px,3.6vw,48px);letter-spacing:-0.045em;line-height:1;margin-top:14px;font-weight:600;max-width:20ch;text-wrap:balance">¿Tu proyecto está sosteniendo el cambio?</h2>
+      <p style="font-size:16px;color:rgba(250,248,243,0.78);margin-top:16px;max-width:60ch;line-height:1.55">Una pregunta por cada fase. Respóndelas con honestidad, idealmente con el sponsor y los líderes de área en la sala, y mira dónde está en riesgo la adopción.</p>
+
+      <div role="group" aria-label="Diagnóstico de adopción del cambio" style="margin-top:40px;border-top:1px solid rgba(250,248,243,0.14)">
+        <sc-for list="{{ diag }}" as="q" hint-placeholder-count="8">
+          <div style="display:grid;grid-template-columns:1fr 240px;gap:24px;align-items:center;padding:20px 0;border-bottom:1px solid rgba(250,248,243,0.14)" data-diag-row>
+            <div style="display:flex;gap:16px;align-items:baseline">
+              <span style="font-family:var(--mono);font-size:12px;color:var(--coral);flex:none">{{ q.n }}</span>
+              <div style="font-size:15.5px;color:var(--canvas);line-height:1.45">{{ q.text }}</div>
+            </div>
+            <div>
+              <div class="diag-controls" role="radiogroup" aria-label="{{ q.aria }}" style="display:flex;gap:8px">
+                <button type="button" role="radio" aria-checked="{{ q.si.pressed }}" aria-pressed="{{ q.si.pressed }}" onClick="{{ q.si.onClick }}" style="{{ q.si.style }}">Sí</button>
+                <button type="button" role="radio" aria-checked="{{ q.parcial.pressed }}" aria-pressed="{{ q.parcial.pressed }}" onClick="{{ q.parcial.onClick }}" style="{{ q.parcial.style }}">A medias</button>
+                <button type="button" role="radio" aria-checked="{{ q.no.pressed }}" aria-pressed="{{ q.no.pressed }}" onClick="{{ q.no.onClick }}" style="{{ q.no.style }}">No</button>
+              </div>
+              <span class="print-only" style="font-family:var(--mono);font-size:11px;letter-spacing:0.06em;color:var(--ink)">Respuesta: {{ q.answerLabel }}</span>
+            </div>
+          </div>
+        </sc-for>
+      </div>
+
+      <!-- result -->
+      <div style="margin-top:36px;border:1px solid rgba(250,248,243,0.16);border-radius:var(--r-lg);padding:30px 32px;background:rgba(250,248,243,0.04)">
+        <div style="display:flex;align-items:baseline;justify-content:space-between;gap:20px;flex-wrap:wrap">
+          <div style="font-family:var(--mono);font-size:10.5px;letter-spacing:0.14em;text-transform:uppercase;color:rgba(250,248,243,0.7)">Sostenibilidad del cambio</div>
+          <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.06em;color:rgba(250,248,243,0.7)">{{ answered }}/{{ total }} fases</div>
+        </div>
+        <div style="display:flex;align-items:flex-end;gap:16px;margin-top:14px">
+          <div style="font-size:clamp(40px,6vw,72px);font-weight:600;letter-spacing:-0.04em;line-height:0.9;color:{{ bandColor }}">{{ pct }}%</div>
+          <div style="font-size:20px;font-weight:600;letter-spacing:-0.02em;padding-bottom:8px;color:{{ bandColor }}">{{ band }}</div>
+        </div>
+        <div style="height:8px;border-radius:6px;background:rgba(250,248,243,0.12);margin-top:18px;overflow:hidden">
+          <div style="height:100%;border-radius:6px;width:{{ pctW }};background:{{ bandColor }};transition:width .4s var(--ease)"></div>
+        </div>
+        <p style="font-size:14.5px;color:rgba(250,248,243,0.82);margin-top:18px;line-height:1.55;max-width:64ch">{{ bandDesc }}</p>
+
+        <!-- plan priorizado (Mejora 3) -->
+        <sc-if value="{{ planReady }}" hint-placeholder-val="{{ false }}">
+        <div style="margin-top:28px;border-top:1px solid rgba(250,248,243,0.16);padding-top:26px">
+          <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.14em;text-transform:uppercase;color:var(--coral)">Plan priorizado</div>
+          <sc-if value="{{ hasRisks }}" hint-placeholder-val="{{ true }}">
+          <p style="font-size:14px;color:rgba(250,248,243,0.82);margin-top:10px;max-width:66ch;line-height:1.5">Estas son las fases en riesgo, ordenadas por prioridad, con la acción concreta de Arkode que les corresponde.</p>
+          <div style="margin-top:18px;display:flex;flex-direction:column;gap:10px">
+            <sc-for list="{{ plan }}" as="p" hint-placeholder-count="3">
+              <div data-plan-row style="display:grid;grid-template-columns:130px 1fr auto;gap:18px;align-items:center;padding:16px 18px;border:1px solid rgba(250,248,243,0.16);border-radius:var(--r-md);background:rgba(250,248,243,0.04)">
+                <div style="display:flex;align-items:center;gap:8px">
+                  <span style="width:8px;height:8px;border-radius:2px;background:{{ p.levelColor }};flex:none"></span>
+                  <span style="font-family:var(--mono);font-size:9.5px;letter-spacing:0.06em;text-transform:uppercase;color:{{ p.levelColor }};font-weight:500">{{ p.levelLabel }}</span>
+                </div>
+                <div>
+                  <div style="font-size:14.5px;font-weight:600;color:var(--canvas);line-height:1.3"><span style="color:var(--coral);font-family:var(--mono);font-size:12px;margin-right:8px">{{ p.n }}</span>{{ p.short }} · <span style="color:rgba(250,248,243,0.7);font-weight:400">{{ p.moment }}</span></div>
+                  <div style="font-size:13px;color:rgba(250,248,243,0.82);margin-top:6px;line-height:1.5">{{ p.arkode }}</div>
+                </div>
+                <a href="{{ p.anchor }}" class="no-print" style="font-family:var(--mono);font-size:10px;letter-spacing:0.08em;text-transform:uppercase;color:var(--canvas);border:1px solid rgba(250,248,243,0.3);border-radius:var(--r-sm);padding:9px 13px;text-decoration:none;white-space:nowrap" style-hover="border-color:var(--coral);color:var(--coral)">Ir a la fase</a>
+              </div>
+            </sc-for>
+          </div>
+          </sc-if>
+          <sc-if value="{{ noRisks }}" hint-placeholder-val="{{ false }}">
+          <p style="font-size:15px;color:var(--green);margin-top:12px;line-height:1.55;font-weight:500;max-width:66ch">No hay fases marcadas en riesgo. El reto ahora es sostenerlo: comunicación continua, gobierno del sistema y sucesión de liderazgo que encarne el cambio.</p>
+          </sc-if>
+        </div>
+        </sc-if>
+
+        <div class="no-print" style="display:flex;gap:10px;flex-wrap:wrap;margin-top:24px">
+          <button type="button" onClick="{{ reset }}" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(250,248,243,0.82);background:transparent;border:1px solid rgba(250,248,243,0.28);border-radius:var(--r-md);padding:10px 15px;cursor:pointer;transition:all .18s var(--ease)" style-hover="border-color:rgba(250,248,243,0.7);color:#fff">Reiniciar diagnóstico</button>
+          <button type="button" onClick="{{ doPrint }}" style="display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:11px;letter-spacing:0.08em;text-transform:uppercase;color:var(--ink);background:var(--coral);border:1px solid var(--coral);border-radius:var(--r-md);padding:10px 15px;cursor:pointer;transition:all .18s var(--ease)" style-hover="background:var(--coral-deep);border-color:var(--coral-deep);color:#fff">
+            <span data-px="doc" data-unit="3" data-tint="#001C43"></span>Imprimir / guardar PDF
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+  </sc-if>
+
+  <!-- PRÓXIMOS PASOS -->
+  <section style="padding:clamp(64px,9vh,104px) var(--pad);border-bottom:1px solid var(--line);background:var(--bone)">
+    <div style="max-width:var(--maxw);margin:0 auto">
+      <div style="font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute)">05 · Cómo lo trabajamos</div>
+      <h2 style="font-size:clamp(26px,3.4vw,46px);letter-spacing:-0.045em;line-height:1;margin-top:14px;font-weight:600;max-width:22ch;text-wrap:balance">La adopción no es una fase final. Es todo el proyecto.</h2>
+      <p style="font-size:16px;color:var(--ink-soft);margin-top:18px;max-width:60ch;line-height:1.55">Cada error de Kotter se convierte en una actividad concreta dentro de una implementación de Odoo con Arkode:</p>
+      <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:38px" data-steps>
+        <sc-for list="{{ steps }}" as="st" hint-placeholder-count="6">
+          <div style="border:1px solid var(--line);border-radius:var(--r-lg);padding:22px 22px 24px;background:var(--canvas)">
+            <span data-px="{{ st.icon }}" data-unit="4" data-tint="#001C43"></span>
+            <div style="font-size:16px;font-weight:600;letter-spacing:-0.02em;margin-top:16px">{{ st.t }}</div>
+            <div style="font-size:13.5px;color:var(--mute);margin-top:8px;line-height:1.5">{{ st.d }}</div>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA / CIERRE -->
+  <section class="no-print" style="padding:clamp(64px,9vh,100px) var(--pad);border-bottom:1px solid var(--line)">
+    <div style="max-width:var(--maxw);margin:0 auto;display:flex;align-items:center;justify-content:space-between;gap:32px;flex-wrap:wrap">
+      <div style="max-width:44ch">
+        <h2 style="font-size:clamp(24px,3vw,40px);letter-spacing:-0.04em;line-height:1.02;font-weight:600;text-wrap:balance">Menos errores es la diferencia entre el éxito y el fracaso.</h2>
+        <p style="font-size:15.5px;color:var(--mute);margin-top:16px;line-height:1.55">Implementamos Odoo y acompañamos el cambio para que el sistema se quede. Sin drama, y sin volver al Excel.</p>
+      </div>
+      <a href="#diag" style="display:inline-flex;align-items:center;gap:10px;background:var(--coral);color:#fff;font-size:15px;font-weight:500;padding:14px 22px;border-radius:var(--r-md);text-decoration:none" style-hover="background:var(--coral-deep)">
+        Hacer el diagnóstico <span data-px="arrowR" data-unit="3" data-tint="#fff"></span>
+      </a>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="grain" style="padding:30px var(--pad);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--ink)">
+    <img src="assets/arkode-white.png" alt="Arkode" style="height:14px;opacity:0.9">
+    <div style="font-family:var(--mono);font-size:10px;color:rgba(250,248,243,0.6);letter-spacing:0.05em;text-align:right;line-height:1.6">Basado en John P. Kotter, "Leading Change: Why Transformation Efforts Fail", Harvard Business Review (1995 · 2007).<br>Aplicado a proyectos Odoo por Arkode · 2026</div>
+  </footer>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;showPhaseMap&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Secciones&quot;},&quot;showOdooLens&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Secciones&quot;},&quot;showDiagnostic&quot;:{&quot;editor&quot;:&quot;boolean&quot;,&quot;default&quot;:true,&quot;tsType&quot;:&quot;boolean&quot;,&quot;section&quot;:&quot;Secciones&quot;}}">
+class Component extends DCLogic {
+  constructor(props){
+    super(props);
+    let saved = {};
+    try {
+      const raw = window.localStorage.getItem('arkode_kotter_diag_v1');
+      if(raw) saved = JSON.parse(raw) || {};
+    } catch(e){}
+    this.state = { answers: saved, open: {} };
+  }
+
+  renderVals(){
+    const showOdooLens = this.props.showOdooLens !== false;
+    const showDiagnostic = this.props.showDiagnostic !== false;
+    const showPhaseMap = this.props.showPhaseMap !== false;
+
+    const lessons = [
+      { n:'01', t:'El cambio toma tiempo', d:'Pasa por fases sucesivas que, en conjunto, requieren un esfuerzo largo.' },
+      { n:'02', t:'Saltarse pasos no funciona', d:'Omitir fases solo crea la ilusión de velocidad; nunca da buen resultado.' },
+      { n:'03', t:'Cada error es costoso', d:'Un fallo en cualquier fase frena el impulso y anula lo ya ganado.' },
+      { n:'04', t:'Hasta los capaces fallan', d:'Con poca práctica en renovar organizaciones, casi todos cometen al menos un gran error.' },
+    ];
+
+    const errorsBase = [
+      { id:'e1', n:'01', short:'Urgencia', icon:'bolt', moment:'Kickoff',
+        groupStart:'Kickoff', groupDesc:'Antes de tocar la configuración: dejar claro por qué cambiamos, quién lo lidera y hacia dónde vamos.',
+        title:'No generar suficiente sentido de urgencia',
+        error:'El cambio arranca cuando alguien examina de verdad la situación (competencia, márgenes, retrabajos) y comunica el riesgo de forma amplia y contundente. Sin motivación, nadie coopera y el esfuerzo no avanza.',
+        why:'Suele haber demasiados administradores y muy pocos líderes. La fase no avanza hasta que hay liderazgo real empujándola.',
+        dataLabel:'Umbral', dataValue:'75%',
+        dataNote:'de la gerencia debe estar convencida de que "seguir igual" es inaceptable. Más del 50% de las empresas fracasan aquí.',
+        odoo:'El proyecto arranca porque "ya tocaba tener un ERP", no porque el negocio duela. Los key users siguen en Excel; nadie les mostró qué se rompe si no cambian.',
+        arkode:'Diagnóstico con datos reales del negocio (horas perdidas, errores de inventario, retrabajo) para hacer visible el costo de no cambiar, con el sponsor al frente.',
+        moreSuccess:'Suelen empezar bien cuando llega un buen líder que ve la necesidad de un cambio mayor. Alguien facilita una conversación franca sobre hechos incómodos (nueva competencia, márgenes a la baja, pérdida de participación) y se apoya en voces externas, analistas, clientes o consultores, para traer la mala noticia. La meta, en palabras de un exdirector europeo, es hacer que el statu quo parezca más peligroso que lanzarse hacia lo desconocido.',
+        moreNuance:'Malos resultados son bendición y maldición a la vez: perder dinero capta la atención de la gente, pero deja menos margen de maniobra. Con buenos resultados pasa lo contrario: cuesta más convencer, pero hay más recursos para hacer el cambio.',
+        moreExamples:[
+          'Un director general provocó a propósito la mayor pérdida contable en la historia de la compañía, lo que generó fuertes presiones desde Wall Street.',
+          'Un presidente de división encargó las primeras encuestas de satisfacción de clientes sabiendo que los resultados serían malos, y luego los hizo públicos.'
+        ] },
+      { id:'e2', n:'02', short:'Coalición', icon:'user', moment:'Kickoff', groupStart:'', groupDesc:'',
+        title:'No formar una coalición guía poderosa',
+        error:'Los programas empiezan con una o dos personas, pero necesitan masa crítica temprano: un grupo fuerte en títulos, información, experiencia y relaciones, comprometido con la renovación.',
+        why:'Sin liderazgo de línea fuerte, el grupo nunca logra el poder necesario; tarde o temprano la oposición se reagrupa y frena el cambio.',
+        dataLabel:'Tamaño del equipo', dataValue:'3–5 → 20–50',
+        dataNote:'personas el primer año; hasta 20–50 en organizaciones grandes antes de lograr avances reales.',
+        odoo:'La implementación queda en manos de TI o de un solo key user. Cuando choca con operaciones, no hay nadie con autoridad para destrabarla.',
+        arkode:'Comité de proyecto con sponsor y líderes de área (de línea, no de staff), key users con mandato y un RACI claro de decisiones.',
+        moreSuccess:'Un alto sentido de urgencia ayuda a armar la coalición, pero casi siempre se necesita más: alguien reúne a estas personas, construye una evaluación compartida de los problemas y oportunidades, y crea un nivel mínimo de confianza y comunicación. Los retiros fuera de la oficina, de dos o tres días, son un vehículo común. La coalición incluye a gente que no es de la alta dirección, así que opera fuera de la jerarquía normal, lo cual incomoda pero es necesario.',
+        moreNuance:'El núcleo siempre son gerentes senior; a veces se suma un miembro del consejo, el representante de un cliente clave o incluso un líder sindical con peso.',
+        moreExamples:[] },
+      { id:'e3', n:'03', short:'Visión', icon:'target', moment:'Kickoff', groupStart:'', groupDesc:'',
+        title:'Carecer de una visión clara',
+        error:'Una imagen del futuro fácil de comunicar y atractiva para clientes, socios y empleados, más allá de los números de un plan a cinco años, con una estrategia para alcanzarla.',
+        why:'Sin visión, el esfuerzo se disuelve en proyectos confusos e incompatibles que no suman y llevan a la organización a ningún lado.',
+        dataLabel:'Regla de oro', dataValue:'5 min',
+        dataNote:'Si no puedes comunicar la visión en cinco minutos y generar entendimiento e interés, aún no terminas esta fase.',
+        odoo:'El objetivo se vuelve "implementar los módulos" en lugar de "cómo opera la empresa cuando Odoo funciona". Una lista de configuraciones sin norte.',
+        arkode:'Definimos la visión operativa en una frase que todos entienden (del almacén a dirección) y la estrategia de fases para llegar ahí.',
+        moreSuccess:'La visión suele empezar borrosa y desde una sola persona, y se vuelve clara y comunicable solo después de meses de trabajo de la coalición, con análisis riguroso y algo de imaginación, hasta acompañarse de una estrategia para lograrla.',
+        moreNuance:'',
+        moreExamples:[
+          'En una empresa europea mediana, el primer borrador ya tenía dos tercios de las ideas finales; el alcance global estuvo desde el inicio, mientras que salir de actividades de bajo valor agregado llegó tras varios meses de discusión.',
+          'Otra compañía repartió cuadernos de cuatro pulgadas de grosor con procedimientos, metas y plazos, pero sin decir hacia dónde llevaba todo; la mayoría de los empleados quedó confundida o alienada.',
+          'A un ejecutivo se le pidió describir su visión y respondió con una conferencia de 30 minutos apenas comprensible, con los elementos de una buena visión profundamente enterrados.'
+        ] },
+      { id:'e4', n:'04', short:'Comunicar', icon:'chat', moment:'Configuración',
+        groupStart:'Configuración', groupDesc:'Mientras se arma el sistema: comunicar sin descanso y quitar del camino lo que estorba.',
+        title:'Subcomunicar la visión por un factor de diez',
+        error:'La transformación necesita que cientos de personas ayuden, a veces con sacrificios. Sin comunicación creíble y abundante, en palabras y en hechos, nunca se ganan corazones y mentes.',
+        why:'Nada socava más el cambio que líderes visibles que se comportan de forma inconsistente con lo que predican.',
+        dataLabel:'La realidad', dataValue:'0.0001%',
+        dataNote:'de la comunicación anual: un kickoff y un correo. Así se subcomunica la visión por un factor de diez.',
+        odoo:'Un kickoff, un correo y silencio. Muchos usuarios se enteran de que existe Odoo el día del go-live.',
+        arkode:'Plan de comunicación por todos los canales, demos y sesiones de Q&A, y líderes que usan Odoo ellos mismos: predicar con el ejemplo.',
+        moreSuccess:'Las visiones que funcionan incluyen nuevas posibilidades de crecimiento y el compromiso de tratar con justicia a quien sea despedido. Los líderes que comunican bien meten el mensaje en su día a día (en cada problema de negocio, cada evaluación de desempeño y cada revisión trimestral) y usan todos los canales, sobre todo los que se desperdician en información no esencial. Y aprenden a predicar con el ejemplo, buscando volverse un símbolo vivo de la nueva cultura.',
+        moreNuance:'La comunicación se da en palabras y en hechos, y los hechos suelen pesar más: nada socava más el cambio que el comportamiento de individuos importantes que es inconsistente con sus palabras.',
+        moreExamples:[
+          'Un gerente de planta de 60 años, que en 40 años casi no había pensado en los clientes, cambió de forma notable hacia un comportamiento orientado al cliente; ayudaron la urgencia alta, ser parte de la coalición y del equipo de la visión, y la retroalimentación de pares y subordinados.'
+        ] },
+      { id:'e5', n:'05', short:'Obstáculos', icon:'plug', moment:'Configuración', groupStart:'', groupDesc:'',
+        title:'No remover los obstáculos a la nueva visión',
+        error:'La gente entiende la visión y quiere ayudar, pero "un elefante bloquea el camino": estructura, incentivos o jefes que no cambian. Comunicar no basta; hay que remover los bloqueos.',
+        why:'Si el bloqueador es una persona con poder que socava las iniciativas, el cinismo crece y todo el esfuerzo puede colapsar.',
+        dataLabel:'El bloqueador', dataValue:'El elefante',
+        dataNote:'Estructura, KPIs, permisos, o el jefe que exige justo lo contrario a la nueva visión.',
+        odoo:'Procesos viejos, permisos mal puestos e incentivos que premian lo de antes, y el jefe que sigue pidiendo el reporte en Excel.',
+        arkode:'Identificamos y removemos bloqueadores (procesos, permisos, KPIs) y confrontamos, con justicia, a quien socava el nuevo sistema.',
+        moreSuccess:'A mayor participación, mejor resultado: se anima a la gente a probar enfoques nuevos y ejercer liderazgo mientras encajen en la visión. Comunicar bien empodera, pero nunca basta por sí solo. En la primera mitad ninguna organización puede quitar todos los obstáculos, pero los grandes deben confrontarse y removerse. Si el bloqueador es una persona, hay que tratarla con justicia y de forma consistente con la nueva visión.',
+        moreNuance:'',
+        moreExamples:[
+          'Una compañía arrancó con mucha publicidad y avanzó bien hasta la cuarta fase, pero se detuvo porque se dejó que el directivo de la división más grande socavara la mayoría de las iniciativas: apoyaba de palabra, no cambiaba su conducta ni sus sistemas. Los demás directivos no lo detuvieron; los mandos medios concluyeron que la dirección había mentido sobre su compromiso, creció el cinismo y todo el esfuerzo colapsó.'
+        ] },
+      { id:'e6', n:'06', short:'Quick wins', icon:'trendUp', moment:'Go-live',
+        groupStart:'Go-live', groupDesc:'Alrededor del arranque: mostrar resultados reales sin cantar victoria antes de tiempo.',
+        title:'No generar logros de corto plazo',
+        error:'La transformación toma tiempo; sin metas cercanas que cumplir y celebrar, pierde impulso. Crear logros es activo, no esperarlos: se planean, se logran y se recompensan.',
+        why:'Cuando queda claro que el cambio será largo, la urgencia cae. Sin evidencia, demasiados se rinden o se suman a la resistencia.',
+        dataLabel:'Evidencia en', dataValue:'12–24 meses',
+        dataNote:'La gente necesita ver resultados inequívocos. En un caso, un nuevo producto exitoso llegó a los 20 meses.',
+        odoo:'Se promete todo para un go-live gigante y lejano. Pasan meses sin nada que mostrar, y el equipo se cansa.',
+        arkode:'Planeamos quick wins visibles por fase (un proceso que ya corre en Odoo, un reporte que antes tomaba días) y reconocemos al equipo.',
+        moreSuccess:'Uno o dos años dentro del esfuerzo empiezan a verse señales inequívocas: calidad al alza, freno en la caída del ingreso neto, nuevos productos exitosos, más participación de mercado, mejor productividad o una satisfacción de cliente medida más alta. El logro es inequívoco, no un juicio de valor que los opositores puedan descartar.',
+        moreNuance:'',
+        moreExamples:[
+          'En una manufacturera estadounidense, la coalición produjo el lanzamiento visible y exitoso de un nuevo producto cerca de 20 meses después de iniciar. El producto se eligió unos seis meses después del arranque porque podía diseñarse y lanzarse en poco tiempo, lo podía manejar un equipo pequeño devoto a la visión, tenía potencial al alza y podía operar fuera de la estructura departamental.'
+        ] },
+      { id:'e7', n:'07', short:'Victoria', icon:'clock', moment:'Go-live', groupStart:'', groupDesc:'',
+        title:'Declarar la victoria demasiado pronto',
+        error:'Celebrar un logro está bien; declarar "ganada la guerra" es catastrófico. Hasta que el cambio se hunde en la cultura, los nuevos enfoques son frágiles y regresan.',
+        why:'Los resistores usan la "victoria" para mandar a las tropas de vuelta a casa; poco después el cambio se detiene y la tradición regresa.',
+        dataLabel:'Arraigar toma', dataValue:'5–10 años',
+        dataNote:'Que el cambio se vuelva cultura toma años. En un caso, el pico de cambio llegó a los 36 meses del primer logro.',
+        odoo:'"Ya salimos en vivo" se toma como el fin del proyecto. Se va el consultor y en meses la gente vuelve al Excel.',
+        arkode:'Usamos el go-live como plataforma, no como meta: acompañamiento post go-live para atacar los procesos más grandes que faltaban.',
+        moreSuccess:'En vez de declarar la victoria, los líderes de esfuerzos exitosos usan la credibilidad de los primeros logros para atacar problemas mayores: van por sistemas y estructuras que antes no se habían tocado, cuidan a quién promueven, contratan y desarrollan, y suman proyectos de reingeniería de mayor alcance. Entienden que la renovación toma años, no meses.',
+        moreNuance:'',
+        moreExamples:[
+          'En cerca de una docena de esfuerzos de reingeniería, casi siempre se declaró la victoria y se agradeció a los costosos consultores al terminar el primer proyecto grande, tras dos o tres años; un par de años después los cambios útiles desaparecieron, y en dos de diez casos hoy es difícil hallar rastro del trabajo.',
+          'En una de las transformaciones más exitosas, el cambio anual se midió durante siete años en escala de 1 a 10: 2, 4, 3, 7, 8, 4 y 2. El pico llegó en el año cinco, 36 meses después del primer conjunto de logros visibles.'
+        ] },
+      { id:'e8', n:'08', short:'Cultura', icon:'layers', moment:'Post go-live',
+        groupStart:'Post go-live', groupDesc:'Después del go-live: convertir el nuevo sistema en la forma normal de trabajar.',
+        title:'No anclar los cambios en la cultura',
+        error:'El cambio "se pega" cuando se vuelve "así hacemos las cosas aquí". Hasta que entra en las normas y valores compartidos, se degrada apenas se retira la presión.',
+        why:'Si la gente conecta mal las causas, o la sucesión no personifica el nuevo enfoque, una mala decisión en la cima borra años de trabajo.',
+        dataLabel:'Institucionalizar', dataValue:'2 claves',
+        dataNote:'Mostrar por qué mejoró el desempeño, y asegurar que la siguiente generación de líderes encarne el cambio.',
+        odoo:'Odoo funciona, pero nadie sabe por qué mejoró. Cambia el gerente y regresan las hojas de cálculo paralelas.',
+        arkode:'Articulamos la conexión Odoo → resultados en cada junta, y dejamos gobierno del sistema, onboarding y sucesión que sostienen el cambio.',
+        moreSuccess:'Dos cosas ayudan a institucionalizar el cambio en la cultura: mostrar de forma consciente cómo los nuevos enfoques, comportamientos y actitudes mejoraron el desempeño (ayudar a la gente a hacer las conexiones correctas), y tomarse el tiempo para asegurar que la siguiente generación de alta dirección realmente encarne el nuevo enfoque.',
+        moreNuance:'Cuando la gente hace sola las conexiones, a veces las hace mal: atribuye la mejora al estilo de un jefe carismático en lugar de a su propio trabajo. Y si los requisitos para ascender no cambian, una mala decisión de sucesión en la cima puede socavar una década de trabajo.',
+        moreExamples:[
+          'Una compañía fue implacable: dedicó tiempo en cada reunión gerencial importante a discutir por qué mejoraba el desempeño, y su periódico interno publicó artículo tras artículo mostrando cómo los cambios habían aumentado las ganancias.',
+          'En tres casos el campeón del cambio era el ejecutivo que se retiraba; como los consejos no entendían las transformaciones a detalle, no vieron que sus elecciones de sucesión no eran buenas, y en dos años las señales de renovación empezaron a desaparecer.'
+        ] },
+    ];
+
+    const open = this.state.open || {};
+    const errors = errorsBase.map((e, i) => {
+      const isOpen = !!open[e.id];
+      return Object.assign({}, e, {
+        idx: i,
+        anchor: '#' + e.id,
+        altStr: (i % 2 === 1) ? '1' : '0',
+        isOpen,
+        expandedStr: isOpen ? 'true' : 'false',
+        moreLabel: isOpen ? 'Ver menos' : 'Ver más del artículo',
+        toggleIcon: isOpen ? 'arrowDownFull' : 'plus',
+        hasNuance: !!e.moreNuance,
+        hasExamples: (e.moreExamples && e.moreExamples.length > 0),
+        toggle: () => this.setState(s => ({ open: Object.assign({}, s.open, { [e.id]: !s.open[e.id] }) })),
+      });
+    });
+
+    // phase map groups
+    const momentOrder = [
+      { label:'Kickoff', note:'Antes de configurar' },
+      { label:'Configuración', note:'Mientras se arma el sistema' },
+      { label:'Go-live', note:'Al salir en vivo' },
+      { label:'Post go-live', note:'Después del arranque' },
+    ];
+    const phases = momentOrder.map(m => ({
+      label: m.label, note: m.note,
+      items: errors.filter(e => e.moment === m.label),
+    }));
+
+    const steps = [
+      { icon:'search', t:'Caso de urgencia', d:'Diagnóstico con datos reales que muestra el costo de no cambiar.' },
+      { icon:'user', t:'Comité de cambio', d:'Sponsor + líderes de línea + key users con mandato y un RACI claro.' },
+      { icon:'chat', t:'Plan de comunicación', d:'Un mensaje único, en todos los canales, sostenido hasta después del go-live.' },
+      { icon:'trendUp', t:'Quick wins por fase', d:'Procesos que ya corren en Odoo, visibles y celebrados en los primeros meses.' },
+      { icon:'gear', t:'Remoción de obstáculos', d:'Procesos, permisos e incentivos alineados al nuevo sistema.' },
+      { icon:'shield', t:'Acompañamiento post go-live', d:'El go-live como plataforma: onboarding, gobierno y sucesión del sistema.' },
+    ];
+
+    // ---- diagnostic ----
+    const qs = [
+      '¿La dirección y cerca del 75% de los mandos sienten que seguir sin cambiar es inaceptable?',
+      '¿Existe un comité guía con poder real (sponsor y líderes de línea), no solo TI o un key user?',
+      '¿Cualquiera puede describir en 5 minutos cómo operará la empresa cuando Odoo funcione?',
+      '¿La visión se comunica en todos los canales y los líderes usan Odoo ellos mismos?',
+      '¿Se han removido procesos, permisos e incentivos que estorban al nuevo sistema?',
+      '¿Hay quick wins visibles planeados y celebrados en los primeros meses?',
+      '¿El go-live se trata como plataforma, con acompañamiento, y no como la meta final?',
+      '¿Se explica por qué mejoran los resultados, y el onboarding y la sucesión sostienen el cambio?',
+    ];
+    const answers = this.state.answers || {};
+    const mk = (i, val) => {
+      const on = answers[i] === val;
+      let bg='transparent', fg='rgba(250,248,243,0.78)', bd='rgba(250,248,243,0.3)';
+      if(on){
+        if(val==='si'){ bg='var(--coral)'; fg='#fff'; bd='var(--coral)'; }
+        else if(val==='parcial'){ bg='rgba(250,248,243,0.92)'; fg='var(--ink)'; bd='rgba(250,248,243,0.92)'; }
+        else { bg='rgba(250,248,243,0.16)'; fg='#fff'; bd='rgba(250,248,243,0.6)'; }
+      }
+      return {
+        onClick: () => this.setState(s => ({ answers: Object.assign({}, s.answers, { [i]: val }) })),
+        pressed: on ? 'true' : 'false',
+        style: 'flex:1;padding:10px 6px;border-radius:8px;border:1px solid '+bd+';background:'+bg+';color:'+fg+';font-family:var(--font);font-size:12.5px;font-weight:500;cursor:pointer;transition:all .18s var(--ease);white-space:nowrap'
+      };
+    };
+    const labelMap = { si:'Sí', parcial:'A medias', no:'No' };
+    const diag = qs.map((text, i) => ({
+      n: String(i+1).padStart(2,'0'), text,
+      aria: 'Pregunta ' + (i+1),
+      answerLabel: answers[i] !== undefined ? labelMap[answers[i]] : 'Sin responder',
+      si: mk(i,'si'), parcial: mk(i,'parcial'), no: mk(i,'no'),
+    }));
+
+    let score=0, answered=0;
+    qs.forEach((_,i) => {
+      const a = answers[i];
+      if(a !== undefined){ answered++; score += a==='si'?1 : a==='parcial'?0.5 : 0; }
+    });
+    const total = qs.length;
+    const pct = answered ? Math.round((score/total)*100) : 0;
+    let band, bandDesc, bandColor;
+    if(answered < total){
+      band = 'En curso';
+      bandDesc = 'Has respondido '+answered+' de '+total+' fases. Completa las 8 para ver el nivel de sostenibilidad y el plan priorizado.';
+      bandColor = 'rgba(250,248,243,0.7)';
+    } else if(pct < 40){
+      band = 'Alto riesgo';
+      bandDesc = 'El cambio no está sostenido: varias fases clave siguen abiertas. Es muy probable que, tras el go-live, la operación regrese a los hábitos previos.';
+      bandColor = 'var(--coral)';
+    } else if(pct < 70){
+      band = 'En construcción';
+      bandDesc = 'Hay bases, pero quedan fases frágiles. Cierra los puntos en "No" y "A medias" antes de declarar cualquier victoria.';
+      bandColor = 'rgba(250,248,243,0.92)';
+    } else if(pct < 100){
+      band = 'Bien encaminado';
+      bandDesc = 'La mayoría de las fases están cubiertas. Refuerza los últimos puntos parciales para anclar el cambio en la cultura.';
+      bandColor = 'var(--green)';
+    } else {
+      band = 'Cambio anclado';
+      bandDesc = 'Las 8 fases están cubiertas. El reto ahora es sostenerlo: comunicación continua, gobierno del sistema y sucesión de liderazgo.';
+      bandColor = 'var(--green)';
+    }
+
+    // prioritized plan (Mejora 3)
+    const plan = [];
+    if(answered === total){
+      const risky = [];
+      qs.forEach((_,i) => { const a = answers[i]; if(a==='no' || a==='parcial') risky.push({ i, a }); });
+      risky.sort((x,y) => { if(x.a !== y.a) return x.a==='no' ? -1 : 1; return x.i - y.i; });
+      risky.forEach(({ i, a }) => {
+        const e = errorsBase[i];
+        plan.push({
+          n: e.n, short: e.short, moment: e.moment, anchor: '#' + e.id, arkode: e.arkode,
+          levelLabel: a==='no' ? 'Prioridad alta' : 'Prioridad media',
+          levelColor: a==='no' ? 'var(--coral)' : 'var(--orange)',
+        });
+      });
+    }
+    const planReady = answered === total;
+    const hasRisks = plan.length > 0;
+    const noRisks = planReady && plan.length === 0;
+
+    return {
+      showOdooLens, showDiagnostic, showPhaseMap,
+      lessons, errors, phases, steps, diag,
+      answered, total, pct, pctW: pct+'%', band, bandDesc, bandColor,
+      plan, planReady, hasRisks, noRisks,
+      reset: () => this.setState({ answers: {} }),
+      doPrint: () => { try { window.print(); } catch(e){} },
+    };
+  }
+
+  componentDidMount(){
+    this._hydrate();
+    this._layout();
+    this._onResize = () => this._layout();
+    window.addEventListener('resize', this._onResize);
+    this._onScroll = () => this._progress();
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+    this._progress();
+    setTimeout(() => this._spy(), 60);
+  }
+  componentDidUpdate(){
+    this._hydrate();
+    this._layout();
+    try { window.localStorage.setItem('arkode_kotter_diag_v1', JSON.stringify(this.state.answers || {})); } catch(e){}
+  }
+  componentWillUnmount(){
+    if(this._onResize) window.removeEventListener('resize', this._onResize);
+    if(this._onScroll) window.removeEventListener('scroll', this._onScroll);
+    if(this._io) this._io.disconnect();
+  }
+
+  _hydrate(){
+    try{
+      if(window.Pixel && window.Pixel.hydrate) window.Pixel.hydrate();
+      if(window.MosaicCanvas && window.MosaicCanvas.hydrate) window.MosaicCanvas.hydrate();
+    }catch(e){}
+  }
+
+  _layout(){
+    const w = window.innerWidth;
+    const spine = document.querySelector('[data-spine]');
+    if(spine) spine.style.display = w >= 1240 ? 'flex' : 'none';
+    document.querySelectorAll('[data-two]').forEach(el => {
+      if(el.dataset.orig === undefined){ el.dataset.orig = el.style.gridTemplateColumns || ''; }
+      el.style.gridTemplateColumns = w < 860 ? '1fr' : el.dataset.orig;
+    });
+    document.querySelectorAll('[data-steps]').forEach(el => {
+      el.style.gridTemplateColumns = w < 720 ? '1fr' : (w < 980 ? 'repeat(2,1fr)' : 'repeat(3,1fr)');
+    });
+    document.querySelectorAll('[data-map]').forEach(el => {
+      el.style.gridTemplateColumns = w < 640 ? '1fr' : (w < 980 ? 'repeat(2,1fr)' : 'repeat(4,1fr)');
+    });
+    document.querySelectorAll('[data-body]').forEach(el => {
+      if(w < 860){ el.style.flexDirection = 'column'; }
+      else { el.style.flexDirection = el.getAttribute('data-alt') === '1' ? 'row-reverse' : 'row'; }
+    });
+    document.querySelectorAll('[data-plan-row]').forEach(el => {
+      el.style.gridTemplateColumns = w < 720 ? '1fr' : '130px 1fr auto';
+    });
+    document.querySelectorAll('[data-diag-row]').forEach(el => {
+      el.style.gridTemplateColumns = w < 640 ? '1fr' : '1fr 240px';
+    });
+  }
+
+  _progress(){
+    const el = document.querySelector('[data-progress]');
+    if(!el) return;
+    const d = document.documentElement;
+    const max = d.scrollHeight - d.clientHeight;
+    const p = max > 0 ? (d.scrollTop / max) * 100 : 0;
+    el.style.width = p + '%';
+  }
+
+  _spy(){
+    const sections = Array.from(document.querySelectorAll('[data-spy]'));
+    const dots = Array.from(document.querySelectorAll('[data-spy-dot]'));
+    if(!sections.length || !dots.length) return;
+    const setActive = (id) => {
+      dots.forEach(d => {
+        const on = d.getAttribute('data-spy-dot') === id;
+        const tile = d.querySelector('[data-tile]');
+        const lab = d.querySelector('[data-lab]');
+        if(tile){
+          tile.style.background = on ? 'var(--coral)' : 'var(--canvas)';
+          tile.style.borderColor = on ? 'var(--coral)' : 'var(--line-2)';
+          tile.style.transform = on ? 'rotate(45deg) scale(1.32)' : 'none';
+          tile.style.boxShadow = on ? '0 0 0 5px rgba(255,108,93,0.15)' : 'none';
+        }
+        if(lab) lab.style.opacity = on ? '1' : '0';
+      });
+    };
+    this._io = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if(e.isIntersecting) setActive(e.target.getAttribute('data-spy')); });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
+    sections.forEach(s => this._io.observe(s));
+  }
+}
+</script>
+</body>
+</html>

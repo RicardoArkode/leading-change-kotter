@@ -1,0 +1,141 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "kit/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Geist|Geist Mono))/i]",
+        "message": "Font not provided by the design system. Available: Geist, Geist Mono."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {},
+    "tokens": [
+      "--blue",
+      "--bone",
+      "--bone-2",
+      "--canvas",
+      "--coral",
+      "--coral-deep",
+      "--crimson",
+      "--dur-base",
+      "--dur-fast",
+      "--dur-slow",
+      "--e1",
+      "--e2",
+      "--e3",
+      "--ease",
+      "--faint",
+      "--font",
+      "--green",
+      "--hair",
+      "--ink",
+      "--ink-soft",
+      "--line",
+      "--line-2",
+      "--maxw",
+      "--mono",
+      "--mute",
+      "--orange",
+      "--pad",
+      "--r-lg",
+      "--r-md",
+      "--r-sm",
+      "--space-1",
+      "--space-12",
+      "--space-16",
+      "--space-2",
+      "--space-24",
+      "--space-3",
+      "--space-4",
+      "--space-6",
+      "--space-8"
+    ],
+    "tokenKinds": {
+      "--canvas": "color",
+      "--bone": "color",
+      "--bone-2": "color",
+      "--ink": "color",
+      "--ink-soft": "color",
+      "--mute": "color",
+      "--faint": "color",
+      "--line": "color",
+      "--line-2": "color",
+      "--hair": "color",
+      "--coral": "color",
+      "--coral-deep": "color",
+      "--orange": "color",
+      "--crimson": "color",
+      "--blue": "color",
+      "--green": "color",
+      "--font": "font",
+      "--mono": "font",
+      "--space-1": "spacing",
+      "--space-2": "spacing",
+      "--space-3": "spacing",
+      "--space-4": "spacing",
+      "--space-6": "spacing",
+      "--space-8": "spacing",
+      "--space-12": "spacing",
+      "--space-16": "spacing",
+      "--space-24": "spacing",
+      "--r-sm": "spacing",
+      "--r-md": "spacing",
+      "--r-lg": "spacing",
+      "--e1": "shadow",
+      "--e2": "shadow",
+      "--e3": "shadow",
+      "--ease": "other",
+      "--dur-fast": "other",
+      "--dur-base": "other",
+      "--dur-slow": "other",
+      "--maxw": "spacing",
+      "--pad": "spacing"
+    },
+    "fontFamilies": [
+      "Geist",
+      "Geist Mono"
+    ]
+  }
+}

@@ -1,0 +1,97 @@
+/* =========================================================================
+   Arkode Design System — Mosaic v1 · shared foundation
+   Tokens, reset, type, buttons, eyebrow, nav, reveal.
+   Page-specific layout lives in each page's own <style>.
+   ========================================================================= */
+@import url('https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700;800;900&family=Geist+Mono:wght@400;500&display=swap');
+:root{
+  /* surfaces */
+  --canvas:#FAF8F3; --bone:#F4ECDE; --bone-2:#EFE6D6;
+  /* ink + text */
+  --ink:#001C43; --ink-soft:#33405E; --mute:#6B7390; --faint:#9AA1B6;
+  /* lines */
+  --line:#E4DECF; --line-2:#D7CFBC; --hair:rgba(0,28,67,0.09);
+  /* brand + accents */
+  --coral:#FF6C5D; --coral-deep:#E8503F; --orange:#FF8A3D; --crimson:#C5362A; --blue:#2A6FDB; --green:#1F8A5B;
+  /* type */
+  --font:'Geist',-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;
+  --mono:'Geist Mono',ui-monospace,SFMono-Regular,Menlo,monospace; /* @kind font */
+  /* spacing scale (4px base) */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px; --space-6:24px;
+  --space-8:32px; --space-12:48px; --space-16:64px; --space-24:96px;
+  /* radius */
+  --r-sm:6px; --r-md:9px; --r-lg:14px;
+  /* elevation */
+  --e1:0 1px 2px rgba(0,28,67,0.06);
+  --e2:0 6px 16px -8px rgba(0,28,67,0.16);
+  --e3:0 24px 50px -22px rgba(0,28,67,0.28);
+  /* motion */
+  --ease:cubic-bezier(0.22,0.68,0,1); /* @kind other */
+  --dur-fast:120ms; /* @kind other */
+  --dur-base:200ms; /* @kind other */
+  --dur-slow:320ms; /* @kind other */
+  /* layout */
+  --maxw:1180px; /* @kind spacing */
+  --pad:clamp(16px,4vw,56px); /* @kind spacing */
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{font-family:var(--font);background:var(--canvas);color:var(--ink);line-height:1.45;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;overflow-x:hidden}
+::selection{background:var(--coral);color:#fff}
+a{color:inherit;text-decoration:none}
+img{display:block;max-width:100%}
+
+h1,h2,h3{font-weight:600;letter-spacing:-0.045em;line-height:0.98}
+.eyebrow{font-family:var(--mono);font-size:11px;letter-spacing:0.16em;text-transform:uppercase;color:var(--mute);display:inline-flex;align-items:center;gap:9px}
+.eyebrow b{color:var(--coral-deep);font-weight:500}
+
+/* nav */
+.nav{position:fixed;top:0;left:0;right:0;z-index:70;height:60px;display:flex;align-items:center;justify-content:space-between;padding:0 var(--pad);
+  background:rgba(250,248,243,0.85);backdrop-filter:blur(12px) saturate(118%);-webkit-backdrop-filter:blur(12px) saturate(118%);border-bottom:1px solid var(--line)}
+.nav-l{display:flex;align-items:center;gap:18px}
+.nav-l img{height:16px}
+.nav-tag{font-family:var(--mono);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:var(--coral-deep);border:1px solid rgba(232,80,63,0.32);padding:5px 9px;border-radius:5px}
+.nav a.back{font-family:var(--mono);font-size:12px;color:var(--mute);display:inline-flex;align-items:center;gap:8px}
+.nav a.back:hover{color:var(--ink)}
+
+/* buttons */
+.btn{display:inline-flex;align-items:center;gap:9px;font-size:14px;font-weight:500;letter-spacing:-0.01em;padding:10px 16px;border-radius:var(--r-md);cursor:pointer;border:1px solid transparent;transition:transform .2s var(--ease),background .2s var(--ease)}
+.btn-dark{background:var(--ink);color:#fff}.btn-dark:hover{transform:translateY(-1px)}
+.btn-coral{background:var(--coral);color:#fff}.btn-coral:hover{background:var(--coral-deep);transform:translateY(-1px)}
+.btn-ghost{border-color:var(--line-2);color:var(--ink)}.btn-ghost:hover{background:#fff;border-color:var(--ink)}
+.btn-sm{padding:7px 12px;font-size:13px}
+
+/* page scaffold */
+.wrap{max-width:var(--maxw);margin:0 auto;padding:0 var(--pad)}
+.sec{padding:clamp(64px,9vh,110px) 0;border-bottom:1px solid var(--line)}
+.sec.bone{background:var(--bone)}
+.sec.ink{background:var(--ink);color:var(--canvas)}
+.sec.ink .eyebrow{color:rgba(250,248,243,0.55)}
+.sec-head{max-width:740px;margin-bottom:44px}
+.sec-head h2{font-size:clamp(28px,3.8vw,50px);margin-top:14px;letter-spacing:-0.045em}
+.sec-head p{font-size:16px;color:var(--mute);margin-top:16px;max-width:58ch;line-height:1.55}
+.sec.ink .sec-head p{color:rgba(250,248,243,0.62)}
+
+/* hero (generic) */
+.hero{padding:128px 0 0}
+.hero-inner{border-bottom:1px solid var(--line);padding-bottom:60px}
+.hero h1{font-size:clamp(42px,7vw,104px);letter-spacing:-0.05em;line-height:0.9;margin-top:22px}
+.hero .sub{font-size:clamp(16px,1.7vw,21px);color:var(--ink-soft);margin-top:24px;max-width:52ch;line-height:1.42}
+
+/* footer */
+.foot{padding:28px var(--pad);display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;background:var(--ink)}
+.foot img{height:14px;opacity:0.85}
+.foot .fr{font-family:var(--mono);font-size:10.5px;color:rgba(250,248,243,0.5);letter-spacing:0.05em}
+
+/* reveal */
+.reveal{will-change:opacity,transform}
+html.anim .reveal{opacity:0;transform:translateY(20px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.reveal.in{opacity:1!important;transform:none!important}
+.d1{transition-delay:.07s}.d2{transition-delay:.14s}.d3{transition-delay:.21s}
+@media(prefers-reduced-motion:reduce){html.anim .reveal{opacity:1!important;transform:none!important}*{scroll-behavior:auto!important}}
+
+/* grain overlay — add class="grain" to any dark/coral block for material depth */
+.grain{position:relative}
+.grain::after{content:"";position:absolute;inset:0;pointer-events:none;z-index:1;opacity:0.5;mix-blend-mode:overlay;
+  background-image:url("assets/grain.svg");background-size:160px 160px}
+.grain>*{position:relative;z-index:2}

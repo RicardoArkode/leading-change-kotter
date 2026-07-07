@@ -1,0 +1,7 @@
+/* =========================================================================
+   Arkode Design System — canonical entry stylesheet
+   The whole system reads from here. Mosaic v1 foundation lives in kit/mosaic.css
+   (tokens, reset, type, buttons, scaffold, reveal, grain). Link THIS file
+   (or kit/mosaic.css directly inside the kit) to inherit the system.
+   ========================================================================= */
+@import url('kit/mosaic.css');
